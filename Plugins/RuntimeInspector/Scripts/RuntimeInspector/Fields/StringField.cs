@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ namespace RuntimeInspectorNamespace
 #pragma warning disable 0649
 		[SerializeField]
 		private BoundInputField input;
+		[SerializeField] private Button customFunctionBtn;
 #pragma warning restore 0649
 
 		private Mode m_setterMode = Mode.OnValueChange;
@@ -67,6 +69,18 @@ namespace RuntimeInspectorNamespace
 				input.BackingField.textComponent.alignment = lineCount > 1 ? TextAnchor.UpperLeft : TextAnchor.MiddleLeft;
 
 				OnSkinChanged();
+			}
+
+			var customFunctionAttribute = (CustomStringFieldAttribute)variable?.GetCustomAttributes().FirstOrDefault(x => x is CustomStringFieldAttribute);
+			customFunctionBtn.onClick.RemoveAllListeners();
+			if (customFunctionAttribute != default)
+			{
+				customFunctionBtn.gameObject.SetActive(true);
+				customFunctionBtn.onClick.AddListener(() => customFunctionAttribute.Execute(value => Value = value));
+			}
+			else
+			{
+				customFunctionBtn.gameObject.SetActive(false);
 			}
 		}
 
