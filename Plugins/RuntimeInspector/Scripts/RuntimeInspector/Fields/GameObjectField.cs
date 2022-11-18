@@ -61,9 +61,10 @@ namespace RuntimeInspectorNamespace
 			return type == typeof( GameObject );
 		}
 
-		protected override void OnBound( MemberInfo variable )
+		protected override void OnBound(MemberInfo variable,
+										IEnumerable<Attribute> arrayCustomAttribute)
 		{
-			base.OnBound( variable );
+			base.OnBound( variable , arrayCustomAttribute);
 			currentTag = ( (GameObject) Value ).tag;
 		}
 

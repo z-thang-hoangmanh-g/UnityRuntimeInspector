@@ -15,6 +15,10 @@ namespace RuntimeInspectorNamespace
 #pragma warning disable 0649
 		[SerializeField]
 		private LayoutElement sizeLayoutElement;
+		[SerializeField]
+		private Button addBtn;
+		[SerializeField]
+		private Button removeBtn;
 
 		[SerializeField]
 		private Text sizeText;
@@ -27,6 +31,7 @@ namespace RuntimeInspectorNamespace
 		private Type elementType;
 
 		private readonly List<bool> elementsExpandedStates = new List<bool>();
+		private MemberInfo memberInfo;
 
 		protected override int Length
 		{
@@ -58,6 +63,29 @@ namespace RuntimeInspectorNamespace
 			sizeInput.OnValueSubmitted += OnSizeChanged;
 			sizeInput.DefaultEmptyValue = "0";
 			sizeInput.CacheTextOnValueChange = false;
+			addBtn.onClick.AddListener(OnAddSize);
+			removeBtn.onClick.AddListener(OnRemoveSize);
+		}
+
+		private void OnRemoveSize()
+		{
+			if (Int32.TryParse(sizeInput.Text, out var value))
+			{
+				if (value >= 1)
+				{
+					var size = (value - 1).ToString();
+					OnSizeChanged(sizeInput, size);
+				}
+			}
+		}
+
+		private void OnAddSize()
+		{
+			if (Int32.TryParse(sizeInput.Text, out var value))
+			{
+				var size = (value + 1).ToString();
+				OnSizeChanged(sizeInput, size);
+			}
 		}
 
 		public override bool SupportsType( Type type )
@@ -70,10 +98,11 @@ namespace RuntimeInspectorNamespace
 #endif
 		}
 
-		protected override void OnBound( MemberInfo variable )
+		protected override void OnBound(MemberInfo variable,
+										IEnumerable<Attribute> arrayCustomAttribute)
 		{
-			base.OnBound( variable );
-
+			base.OnBound( variable, arrayCustomAttribute );
+			memberInfo = variable;
 			isArray = BoundVariableType.IsArray;
 			elementType = isArray ? BoundVariableType.GetElementType() : BoundVariableType.GetGenericArguments()[0];
 		}
@@ -135,7 +164,7 @@ namespace RuntimeInspectorNamespace
 						Array _array = (Array) Value;
 						_array.SetValue( value, j );
 						Value = _array;
-					} );
+					} , arrayCustomAttribute: memberInfo.GetCustomAttributes());
 
 					if( i < elementsExpandedStates.Count && elementsExpandedStates[i] && elementDrawer is ExpandableInspectorField )
 						( (ExpandableInspectorField) elementDrawer ).IsExpanded = true;
@@ -160,7 +189,7 @@ namespace RuntimeInspectorNamespace
 						IList _list = (IList) Value;
 						_list[j] = value;
 						Value = _list;
-					} );
+					}, arrayCustomAttribute: memberInfo.GetCustomAttributes());
 
 					if( i < elementsExpandedStates.Count && elementsExpandedStates[i] && elementDrawer is ExpandableInspectorField )
 						( (ExpandableInspectorField) elementDrawer ).IsExpanded = true;

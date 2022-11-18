@@ -167,7 +167,7 @@ namespace RuntimeInspectorNamespace
 				throw new ArgumentException( "Variable can either be a field or a property" );
 		}
 
-		public void BindTo( Type variableType, string variableName, Getter getter, Setter setter, MemberInfo variable = null )
+		public void BindTo( Type variableType, string variableName, Getter getter, Setter setter, MemberInfo variable = null, IEnumerable<Attribute> arrayCustomAttribute = null)
 		{
 			m_boundVariableType = variableType;
 			Name = variableName;
@@ -175,7 +175,7 @@ namespace RuntimeInspectorNamespace
 			this.getter = getter;
 			this.setter = setter;
 
-			OnBound( variable );
+			OnBound( variable , arrayCustomAttribute);
 		}
 
 		public void Unbind()
@@ -189,7 +189,8 @@ namespace RuntimeInspectorNamespace
 			Inspector.PoolDrawer( this );
 		}
 
-		protected virtual void OnBound( MemberInfo variable )
+		protected virtual void OnBound(MemberInfo variable,
+									   IEnumerable<Attribute> arrayCustomAttribute)
 		{
 			RefreshValue();
 		}

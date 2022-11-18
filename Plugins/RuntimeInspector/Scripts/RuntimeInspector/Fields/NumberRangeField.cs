@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,9 +24,10 @@ namespace RuntimeInspectorNamespace
 			return variable != null && variable.HasAttribute<RangeAttribute>();
 		}
 
-		protected override void OnBound( MemberInfo variable )
+		protected override void OnBound(MemberInfo variable,
+										IEnumerable<Attribute> arrayCustomAttribute)
 		{
-			base.OnBound( variable );
+			base.OnBound( variable , arrayCustomAttribute);
 
 			RangeAttribute rangeAttribute = variable.GetAttribute<RangeAttribute>();
 			slider.SetRange( Mathf.Max( rangeAttribute.min, numberHandler.MinValue ), Mathf.Min( rangeAttribute.max, numberHandler.MaxValue ) );

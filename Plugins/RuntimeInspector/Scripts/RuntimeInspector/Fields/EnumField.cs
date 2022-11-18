@@ -63,9 +63,10 @@ namespace RuntimeInspectorNamespace
 #endif
 		}
 
-		protected override void OnBound( MemberInfo variable )
+		protected override void OnBound(MemberInfo variable,
+										IEnumerable<Attribute> arrayCustomAttribute)
 		{
-			base.OnBound( variable );
+			base.OnBound( variable , arrayCustomAttribute);
 
 			if( !enumNames.TryGetValue( BoundVariableType, out currEnumNames ) || !enumValues.TryGetValue( BoundVariableType, out currEnumValues ) )
 			{

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -32,9 +33,10 @@ namespace RuntimeInspectorNamespace
 			return type == typeof( Color ) || type == typeof( Color32 );
 		}
 
-		protected override void OnBound( MemberInfo variable )
+		protected override void OnBound(MemberInfo variable,
+										IEnumerable<Attribute> arrayCustomAttribute)
 		{
-			base.OnBound( variable );
+			base.OnBound( variable , arrayCustomAttribute);
 			isColor32 = BoundVariableType == typeof( Color32 );
 		}
 

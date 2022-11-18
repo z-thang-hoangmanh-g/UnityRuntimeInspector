@@ -52,10 +52,11 @@ namespace RuntimeInspectorNamespace
 			return true;
 		}
 
-		protected override void OnBound( MemberInfo variable )
+		protected override void OnBound(MemberInfo variable,
+										IEnumerable<Attribute> arrayCustomAttribute)
 		{
 			elementsInitialized = false;
-			base.OnBound( variable );
+			base.OnBound( variable , arrayCustomAttribute);
 		}
 
 		protected override void GenerateElements()

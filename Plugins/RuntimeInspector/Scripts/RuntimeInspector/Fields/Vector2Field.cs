@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using UnityEngine;
@@ -52,9 +53,10 @@ namespace RuntimeInspectorNamespace
 			return type == typeof( Vector2 );
 		}
 
-		protected override void OnBound( MemberInfo variable )
+		protected override void OnBound(MemberInfo variable,
+										IEnumerable<Attribute> arrayCustomAttribute)
 		{
-			base.OnBound( variable );
+			base.OnBound( variable , arrayCustomAttribute);
 
 #if UNITY_2017_2_OR_NEWER
 			isVector2Int = BoundVariableType == typeof( Vector2Int );

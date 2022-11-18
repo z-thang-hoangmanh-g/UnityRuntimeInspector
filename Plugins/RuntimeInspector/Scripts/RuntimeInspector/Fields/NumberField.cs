@@ -37,9 +37,10 @@ namespace RuntimeInspectorNamespace
 			return supportedTypes.Contains( type );
 		}
 
-		protected override void OnBound( MemberInfo variable )
+		protected override void OnBound(MemberInfo variable,
+										IEnumerable<Attribute> arrayCustomAttribute)
 		{
-			base.OnBound( variable );
+			base.OnBound( variable , arrayCustomAttribute);
 
 			if( BoundVariableType == typeof( float ) || BoundVariableType == typeof( double ) || BoundVariableType == typeof( decimal ) )
 				input.BackingField.contentType = InputField.ContentType.DecimalNumber;

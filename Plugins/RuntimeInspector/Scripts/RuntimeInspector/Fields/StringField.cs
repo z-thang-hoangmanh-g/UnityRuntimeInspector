@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -45,9 +46,10 @@ namespace RuntimeInspectorNamespace
 			return type == typeof( string );
 		}
 
-		protected override void OnBound( MemberInfo variable )
+		protected override void OnBound(MemberInfo variable,
+										IEnumerable<Attribute> arrayCustomAttribute)
 		{
-			base.OnBound( variable );
+			base.OnBound( variable , arrayCustomAttribute);
 
 			int prevLineCount = lineCount;
 			if( variable == null )
@@ -71,7 +73,9 @@ namespace RuntimeInspectorNamespace
 				OnSkinChanged();
 			}
 
-			var customFunctionAttribute = (CustomStringFieldAttribute)variable?.GetCustomAttributes().FirstOrDefault(x => x is CustomStringFieldAttribute);
+
+			var customFunctionAttribute = (CustomStringFieldAttribute)(arrayCustomAttribute?.FirstOrDefault(x => x is CustomStringFieldAttribute))
+				?? (CustomStringFieldAttribute)variable?.GetCustomAttributes().FirstOrDefault(x => x is CustomStringFieldAttribute);
 			customFunctionBtn.onClick.RemoveAllListeners();
 			if (customFunctionAttribute != default)
 			{
@@ -82,6 +86,7 @@ namespace RuntimeInspectorNamespace
 			{
 				customFunctionBtn.gameObject.SetActive(false);
 			}
+
 		}
 
 		protected override void OnUnbound()
